@@ -111,7 +111,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private Integer sensorOrientation;
 
     private Classifier detector;
-    private Vibrator vibrator;
+    private ManagedVibrator vibrator;
 
     private long lastProcessingTimeMs;
     private Bitmap rgbFrameBitmap = null;
@@ -155,8 +155,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         borderedText.setTypeface(Typeface.MONOSPACE);
 
         tracker = new MultiBoxTracker(this);
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
         int cropSize = TF_OD_API_INPUT_SIZE;
         if (MODE == DetectorMode.YOLO) {
             detector =
@@ -384,13 +382,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             if(!mp.isPlaying()) {
                                 Log.v("FUCK", "IM TRYING");
                                 mp.start();
+
+                                vibratePhone(maxAreaPercentage);
                             }
                         }
                         //LOGGER.i("Dominant Title: " + dominantTitle);
                         //LOGGER.i("Is Dominant Object a person? " + dominantObjIsPerson);
-                        if (maxAreaPercentage >= 0.05f) {
-                            //vibratePhone(maxAreaPercentage);
-                        }
 
                         tracker.trackResults(mappedRecognitions, luminanceCopy, currTimestamp);
                         trackingOverlay.postInvalidate();
@@ -402,24 +399,24 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                 });
     }
 
-    long[] farPattern = {100, 1800};
-    long[] okayPattern = {200, 1000};
-    long[] closePattern = {300, 200};
+    long[] farPattern = {100, 600};
+    long[] okayPattern = {100, 600};
+    long[] closePattern = {100, 600};
     long[] lastPattern;
     long systemVibrateAgain = Long.MAX_VALUE;
 
     private void vibratePhone(float intensity) {
+        vibrator = new ManagedVibrator(this);
+
         LOGGER.i("Current time: " + (new Date()).getTime());
         LOGGER.i("Vibrate again time: " + systemVibrateAgain);
 
-        if (systemVibrateAgain <= (new Date()).getTime()) return;
-
         LOGGER.i("Intensity: " + intensity);
         long[] pattern;
-        if (intensity <= 0.15f) {
+        if (intensity <= 0.4f) {
             pattern = farPattern;
             LOGGER.i("Pattern: FAR");
-        } else if (intensity <= 0.35f) {
+        } else if (intensity <= 0.7f) {
             LOGGER.i("Pattern: OKAY");
             pattern = okayPattern;
         } else {
@@ -429,12 +426,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
         systemVibrateAgain = (new Date()).getTime() + pattern[0] + pattern[1] + 100;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0));
-        } else {
-            LOGGER.i("OLD SCHOOL VIBRATE");
-            //deprecated in API 26
-            vibrator.vibrate(pattern[0]);
+        if(intensity > 0.4f) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(pattern, -1);
+            } else {
+                LOGGER.i("OLD SCHOOL VIBRATE");
+                //deprecated in API 26
+                vibrator.vibrate(pattern, -1);
+            }
         }
     }
 
