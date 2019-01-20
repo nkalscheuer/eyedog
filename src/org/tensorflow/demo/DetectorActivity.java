@@ -455,14 +455,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         Random rand = new Random();
         int resId = 0;
 
-        //                                    //max min       max
+        //                                    //max min       min
         if(percent < 0.3f) {
             int randomNum = rand.nextInt((2 - 1) + 1) + 1;
             resId = getResources().getIdentifier("raw/obstacle" + randomNum, null, this.getPackageName());
         }
         else if(percent < 0.7f) {
             if(isPerson == true){
-                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                int randomNum = rand.nextInt((4 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
             }
             else{
@@ -472,11 +472,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         }
         else if(percent >= 0.7f) {
             if(isPerson == true){
-                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                int randomNum = rand.nextInt((4 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
             }
             else{
-                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                int randomNum = rand.nextInt((1 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/danger" + randomNum, null, this.getPackageName());
             }
         }
