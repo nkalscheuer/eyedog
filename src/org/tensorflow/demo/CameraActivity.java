@@ -110,6 +110,8 @@ public abstract class CameraActivity extends Activity
       return;
     }
 
+
+
     try {
       // Initialize the storage bitmaps once when the resolution is known.
       if (rgbBytes == null) {
