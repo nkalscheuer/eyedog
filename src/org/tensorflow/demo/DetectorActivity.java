@@ -367,7 +367,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                         }
 
 
-                        boolean dominantObjIsPerson = (dominantTitle.equals("Person"));
+                        boolean dominantObjIsPerson = (dominantTitle.equals("person"));
                         if (System.currentTimeMillis() - lastObjectAlert > ALERT_TIME_WINDOW
                                 && System.currentTimeMillis() - lastPersonAlert > ALERT_TIME_WINDOW && !dominantTitle.isEmpty()) {
                             //Only create media if the timer window is open
@@ -462,12 +462,17 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         Log.v("FUCK", String.valueOf(isPerson));
 
         //                                    //max min       min
-        if(percent < 0.3f) {
-            int randomNum = rand.nextInt((2 - 1) + 1) + 1;
-            Log.v("FUCK", "randomnum: " + randomNum);
-            resId = getResources().getIdentifier("raw/obstacle" + randomNum, null, this.getPackageName());
+        if(percent < 0.4f) {
+            if(isPerson == true){
+                int randomNum = rand.nextInt((5 - 1) + 1) + 1;
+                resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
+            } else {
+                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                resId = getResources().getIdentifier("raw/obstacle" + randomNum, null, this.getPackageName());
+            }
+
         }
-        else if(percent < 0.7f) {
+        else {
             if(isPerson == true){
                 int randomNum = rand.nextInt((5 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
@@ -475,16 +480,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             else{
                 int randomNum = rand.nextInt((2 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/caution" + randomNum, null, this.getPackageName());
-            }
-        }
-        else if(percent >= 0.7f) {
-            if(isPerson == true){
-                int randomNum = rand.nextInt((5 - 1) + 1) + 1;
-                resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
-            }
-            else{
-                int randomNum = rand.nextInt((1 - 1) + 1) + 1;
-                resId = getResources().getIdentifier("raw/danger" + randomNum, null, this.getPackageName());
             }
         }
 
