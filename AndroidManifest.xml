@@ -21,6 +21,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -35,7 +37,7 @@
         android:theme="@style/MaterialTheme">
 
         <activity android:name="org.tensorflow.demo.DetectorActivity"
-                  android:screenOrientation="portrait"
+                  android:screenOrientation="landscape"
                   android:label="@string/activity_name_detection">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
