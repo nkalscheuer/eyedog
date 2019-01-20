@@ -18,7 +18,6 @@ public class SoundPlayer {
     public SoundPlayer(Context context) {
         //soundPool = new SoundPool(2, AudioManager.STREAM_MUSIC, 0);
         soundPool = new SoundPool.Builder().setMaxStreams(10).build();
-        dontLookAtMe = soundPool.load(context, R.raw.dontlookatme, 1);
     }
 
     public void playDontLookAtMe() {
