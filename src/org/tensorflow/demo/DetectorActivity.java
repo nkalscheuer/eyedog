@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 import org.tensorflow.demo.OverlayView.DrawCallback;
 import org.tensorflow.demo.env.BorderedText;
@@ -370,7 +371,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 && System.currentTimeMillis() - lastPersonAlert > ALERT_TIME_WINDOW && !dominantTitle.isEmpty()) {
                             //Only create media if the timer window is open
                             //find sound here
-                            mp = MediaPlayer.create(DetectorActivity.this, R.raw.dontlookatme);
+
+                            int rsid = pickSound(maxAreaPercentage, dominantObjIsPerson);
+                            mp = MediaPlayer.create(DetectorActivity.this, rsid);
                             if (dominantObjIsPerson) {
                                 lastPersonAlert = System.currentTimeMillis();
                             } else {
@@ -448,9 +451,36 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         detector.enableStatLogging(debug);
     }
 
-    public String pickSound(float percent, String objType) {
-        String returnSound = "";
+    public int pickSound(float percent, boolean isPerson) {
+        Random rand = new Random();
+        int resId = 0;
 
-        return null;
+        //                                    //max min       max
+        if(percent < 0.3f) {
+            int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+            resId = getResources().getIdentifier("raw/obstacle" + randomNum, null, this.getPackageName());
+        }
+        else if(percent < 0.7f) {
+            if(isPerson == true){
+                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
+            }
+            else{
+                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                resId = getResources().getIdentifier("raw/caution" + randomNum, null, this.getPackageName());
+            }
+        }
+        else if(percent >= 0.7f) {
+            if(isPerson == true){
+                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
+            }
+            else{
+                int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+                resId = getResources().getIdentifier("raw/danger" + randomNum, null, this.getPackageName());
+            }
+        }
+
+        return resId;
     }
 }
