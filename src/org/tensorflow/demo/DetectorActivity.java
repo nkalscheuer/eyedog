@@ -28,6 +28,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -114,6 +115,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private boolean computingDetection = false;
 
     private long timestamp = 0;
+    private MediaPlayer mp;
 
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
@@ -404,6 +406,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             //deprecated in API 26
             vibrator.vibrate(pattern[0]);
         }
+
+        if(!mp.isPlaying()){
+            mp.start();
+        }
     }
 
 
@@ -420,5 +426,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     @Override
     public void onSetDebug(final boolean debug) {
         detector.enableStatLogging(debug);
+    }
+
+    public String pickSound(float percent, String objType) {
+        String returnSound = "";
+
+        return null;
     }
 }
