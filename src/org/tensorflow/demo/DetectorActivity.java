@@ -270,6 +270,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     @Override
     protected void processImage() {
+        LOGGER.i("processImage()");
         ++timestamp;
         final long currTimestamp = timestamp;
         byte[] originalLuminance = getLuminance();
@@ -353,7 +354,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 LOGGER.i("Camera area: " + getCameraArea());
                                 LOGGER.i("Area percentage: " + areaPercentage);
 
-
                                 cropToFrameTransform.mapRect(location);
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
@@ -369,7 +369,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                         requestRender();
                         computingDetection = false;
-                        results.clear();
                     }
                 });
     }
@@ -409,9 +408,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             vibrator.vibrate(pattern[0]);
         }
 
-        if(!mp.isPlaying()){
-            mp.start();
-        }
+//        if(!mp.isPlaying()){
+//            mp.start();
+//        }
     }
 
 
