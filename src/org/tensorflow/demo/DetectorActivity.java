@@ -36,6 +36,7 @@ import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -121,9 +122,24 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     private byte[] luminanceCopy;
 
+    protected int cameraHeight = 0;
+    protected int cameraWidth = 0;
+    public int cameraArea;
+
+    public int getCameraArea() { return cameraArea; }
+
     private BorderedText borderedText;
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
+
+        Camera camera = Camera.open();
+        Camera.Parameters param = camera.getParameters();
+        Camera.Size camSize = param.getPictureSize();
+        LOGGER.i("Camera height: " + this.cameraHeight + " Camera Width: " + this.cameraWidth);
+        this.cameraHeight = camSize.height;
+        this.cameraWidth = camSize.width;
+        this.cameraArea = this.cameraHeight * this.cameraWidth;
+
         final float textSizePx =
                 TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
@@ -317,6 +333,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
 
+                        float maxAreaPercentage = 0;
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             if (location != null && result.getConfidence() >= minimumConfidence) {
@@ -324,18 +341,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                                 float h = location.height();
                                 float w = location.width();
-                                float a = h * w;
-                                Camera.Parameters parameters = camera.getParameters();
-                                Camera.Size size = parameters.getPictureSize();
-                                int cameraHeight = size.height;
-                                int cameraWidth = size.width;
+                                float trackingArea = h * w * 100;
+                                float areaPercentage = trackingArea / getCameraArea();
+                                maxAreaPercentage = Math.max(areaPercentage, maxAreaPercentage);
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && a >= 30000) {
-                                    vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                                } else if (a >= 30000) {
-                                    //deprecated in API 26
-                                    vibrator.vibrate(500);
-                                }
+                                LOGGER.i("Tracking area: " + trackingArea);
+                                LOGGER.i("Camera area: " + getCameraArea());
+                                LOGGER.i("Area percentage: " + areaPercentage);
+
 
                                 cropToFrameTransform.mapRect(location);
                                 result.setLocation(location);
@@ -343,14 +356,56 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             }
                         }
 
+                        if (maxAreaPercentage >= 0.05f) {
+                            vibratePhone(maxAreaPercentage);
+                        }
+
                         tracker.trackResults(mappedRecognitions, luminanceCopy, currTimestamp);
                         trackingOverlay.postInvalidate();
 
                         requestRender();
                         computingDetection = false;
+                        results.clear();
                     }
                 });
     }
+
+    long[] farPattern = {100, 1800};
+    long[] okayPattern = {200, 1000};
+    long[] closePattern = {300, 200};
+    long[] lastPattern;
+    long systemVibrateAgain = Long.MAX_VALUE;
+
+    private void vibratePhone(float intensity) {
+        LOGGER.i("Current time: " + (new Date()).getTime());
+        LOGGER.i("Vibrate again time: " + systemVibrateAgain);
+
+        if (systemVibrateAgain <= (new Date()).getTime()) return;
+
+        LOGGER.i("Intensity: " + intensity);
+        long[] pattern;
+        if (intensity <= 0.15f) {
+            pattern = farPattern;
+            LOGGER.i("Pattern: FAR");
+        } else if (intensity <= 0.35f) {
+            LOGGER.i("Pattern: OKAY");
+            pattern = okayPattern;
+        } else {
+            LOGGER.i("Pattern: CLOSE");
+            pattern = closePattern;
+        }
+
+        systemVibrateAgain = (new Date()).getTime() + pattern[0] + pattern[1] + 100;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(VibrationEffect.createWaveform(pattern, 0));
+        } else {
+            LOGGER.i("OLD SCHOOL VIBRATE");
+            //deprecated in API 26
+            vibrator.vibrate(pattern[0]);
+        }
+    }
+
 
     @Override
     protected int getLayoutId() {
