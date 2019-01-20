@@ -30,6 +30,7 @@ import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -41,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 import org.tensorflow.demo.OverlayView.DrawCallback;
 import org.tensorflow.demo.env.BorderedText;
@@ -375,9 +377,26 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         detector.enableStatLogging(debug);
     }
 
-    public String pickSound(float percent, String objType) {
-        String returnSound = "";
+    public int pickSound(float percent, String objType) {
+        Random rand = new Random();
+        int resId = 0;
+        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
 
-        return null;
+        if(percent < 30) {
+            resId = getResources().getIdentifier("raw/generic" + randomNum, null, this.getPackageName());
+        }
+        else if(percent < 70) {
+            if(objType == "person"){
+                resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
+            }
+            else{
+                resId = getResources().getIdentifier("raw/caution" + randomNum, null, this.getPackageName());
+            }
+        }
+        else if(percent >= 70) {
+            resId = getResources().getIdentifier("raw/danger" + randomNum, null, this.getPackageName());
+        }
+
+        return resId;
     }
 }
