@@ -1,47 +1,12 @@
-# TensorFlow Android Camera Demo
+# EyeDog
 
-This folder contains an example application utilizing TensorFlow for Android
-devices.
+Virtual assistant for the visually impaired.
 
 ## Description
 
-The demos in this folder are designed to give straightforward samples of using
-TensorFlow in mobile applications.
+A virtual assistant that uses TensorFlow to recognize and warn the user about people or objects ahead. 
 
-Inference is done using the [TensorFlow Android Inference
-Interface](../../../tensorflow/contrib/android), which may be built separately
-if you want a standalone library to drop into your existing application. Object
-tracking and efficient YUV -> RGB conversion are handled by
-`libtensorflow_demo.so`.
 
-A device running Android 5.0 (API 21) or higher is required to run the demo due
-to the use of the camera2 API, although the native libraries themselves can run
-on API >= 14 devices.
-
-## Current samples:
-
-1. [TF Classify](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/android/src/org/tensorflow/demo/ClassifierActivity.java):
-        Uses the [Google Inception](https://arxiv.org/abs/1409.4842)
-        model to classify camera frames in real-time, displaying the top results
-        in an overlay on the camera image.
-2. [TF Detect](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/android/src/org/tensorflow/demo/DetectorActivity.java):
-        Demonstrates an SSD-Mobilenet model trained using the
-        [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection/)
-        introduced in [Speed/accuracy trade-offs for modern convolutional object detectors](https://arxiv.org/abs/1611.10012) to
-        localize and track objects (from 80 categories) in the camera preview
-        in real-time.
-3. [TF Stylize](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/android/src/org/tensorflow/demo/StylizeActivity.java):
-        Uses a model based on [A Learned Representation For Artistic
-        Style](https://arxiv.org/abs/1610.07629) to restyle the camera preview
-        image to that of a number of different artists.
-4.  [TF
-    Speech](https://github.com/tensorflow/tensorflow/blob/master/tensorflow/examples/android/src/org/tensorflow/demo/SpeechActivity.java):
-    Runs a simple speech recognition model built by the [audio training
-    tutorial](https://www.tensorflow.org/versions/master/tutorials/audio_recognition). Listens
-    for a small set of words, and highlights them in the UI when they are
-    recognized.
-
-<img src="sample_images/classify1.jpg" width="30%"><img src="sample_images/stylize1.jpg" width="30%"><img src="sample_images/detect1.jpg" width="30%">
 
 ## Prebuilt Components:
 
