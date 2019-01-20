@@ -33,6 +33,7 @@ import android.os.SystemClock;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
@@ -374,12 +375,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                             int rsid = pickSound(maxAreaPercentage, dominantObjIsPerson);
                             mp = MediaPlayer.create(DetectorActivity.this, rsid);
+
                             if (dominantObjIsPerson) {
                                 lastPersonAlert = System.currentTimeMillis();
                             } else {
                                 lastObjectAlert = System.currentTimeMillis();
                             }
                             if(!mp.isPlaying()) {
+                                Log.v("FUCK", "IM TRYING");
                                 mp.start();
                             }
                         }
@@ -455,14 +458,18 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         Random rand = new Random();
         int resId = 0;
 
+        Log.v("FUCK", String.valueOf(percent));
+        Log.v("FUCK", String.valueOf(isPerson));
+
         //                                    //max min       min
         if(percent < 0.3f) {
             int randomNum = rand.nextInt((2 - 1) + 1) + 1;
+            Log.v("FUCK", "randomnum: " + randomNum);
             resId = getResources().getIdentifier("raw/obstacle" + randomNum, null, this.getPackageName());
         }
         else if(percent < 0.7f) {
             if(isPerson == true){
-                int randomNum = rand.nextInt((4 - 1) + 1) + 1;
+                int randomNum = rand.nextInt((5 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
             }
             else{
@@ -472,7 +479,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         }
         else if(percent >= 0.7f) {
             if(isPerson == true){
-                int randomNum = rand.nextInt((4 - 1) + 1) + 1;
+                int randomNum = rand.nextInt((5 - 1) + 1) + 1;
                 resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
             }
             else{
