@@ -1,4 +1,5 @@
 <img src="sample_images/teamPhoto.jpg" width="40%">
+
 # EyeDog
 
 Virtual assistant for the visually impaired.
