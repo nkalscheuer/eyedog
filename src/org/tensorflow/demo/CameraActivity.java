@@ -422,9 +422,9 @@ public abstract class CameraActivity extends Activity
   public boolean onKeyDown(final int keyCode, final KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_UP
             || keyCode == KeyEvent.KEYCODE_BUTTON_L1 || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
-      debug = !debug;
-      requestRender();
-      onSetDebug(debug);
+//      debug = !debug;
+//      requestRender();
+//      onSetDebug(debug);
       return true;
     }
     return super.onKeyDown(keyCode, event);

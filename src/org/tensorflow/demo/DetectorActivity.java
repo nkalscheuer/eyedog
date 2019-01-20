@@ -26,6 +26,7 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.hardware.Camera;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.os.Build;
@@ -324,6 +325,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 float h = location.height();
                                 float w = location.width();
                                 float a = h * w;
+                                Camera.Parameters parameters = camera.getParameters();
+                                Camera.Size size = parameters.getPictureSize();
+                                int cameraHeight = size.height;
+                                int cameraWidth = size.width;
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && a >= 30000) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
