@@ -29,7 +29,6 @@ import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.SystemClock;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -41,7 +40,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import java.util.Vector;
 import org.tensorflow.demo.OverlayView.DrawCallback;
 import org.tensorflow.demo.env.BorderedText;
@@ -67,6 +65,10 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private static final String MB_MODEL_FILE = "file:///android_asset/multibox_model.pb";
     private static final String MB_LOCATION_FILE =
             "file:///android_asset/multibox_location_priors.txt";
+    private static final long ALERT_TIME_WINDOW = 2000;
+
+    private long lastPersonAlert = 0;
+    private long lastObjectAlert = 0;
 
     private static final int TF_OD_API_INPUT_SIZE = 300;
     private static final String TF_OD_API_MODEL_FILE =
@@ -270,7 +272,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     @Override
     protected void processImage() {
-        LOGGER.i("processImage()");
         ++timestamp;
         final long currTimestamp = timestamp;
         byte[] originalLuminance = getLuminance();
@@ -339,6 +340,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 new LinkedList<Classifier.Recognition>();
 
                         float maxAreaPercentage = 0;
+                        String dominantTitle = "";
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             if (location != null && result.getConfidence() >= minimumConfidence) {
@@ -349,10 +351,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 float trackingArea = h * w * 100;
                                 float areaPercentage = trackingArea / getCameraArea();
                                 maxAreaPercentage = Math.max(areaPercentage, maxAreaPercentage);
+                                dominantTitle  = (areaPercentage == maxAreaPercentage) ? result.getTitle() : dominantTitle;
 
-                                LOGGER.i("Tracking area: " + trackingArea);
-                                LOGGER.i("Camera area: " + getCameraArea());
-                                LOGGER.i("Area percentage: " + areaPercentage);
+                                //LOGGER.i("Tracking area: " + trackingArea);
+                                //LOGGER.i("Camera area: " + getCameraArea());
+                                //LOGGER.i("Area percentage: " + areaPercentage);
+
 
                                 cropToFrameTransform.mapRect(location);
                                 result.setLocation(location);
@@ -360,8 +364,26 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             }
                         }
 
+
+                        boolean dominantObjIsPerson = (dominantTitle.equals("Person"));
+                        if (System.currentTimeMillis() - lastObjectAlert > ALERT_TIME_WINDOW
+                                && System.currentTimeMillis() - lastPersonAlert > ALERT_TIME_WINDOW && !dominantTitle.isEmpty()) {
+                            //Only create media if the timer window is open
+                            //find sound here
+                            mp = MediaPlayer.create(DetectorActivity.this, R.raw.dontlookatme);
+                            if (dominantObjIsPerson) {
+                                lastPersonAlert = System.currentTimeMillis();
+                            } else {
+                                lastObjectAlert = System.currentTimeMillis();
+                            }
+                            if(!mp.isPlaying()) {
+                                mp.start();
+                            }
+                        }
+                        //LOGGER.i("Dominant Title: " + dominantTitle);
+                        //LOGGER.i("Is Dominant Object a person? " + dominantObjIsPerson);
                         if (maxAreaPercentage >= 0.05f) {
-                            vibratePhone(maxAreaPercentage);
+                            //vibratePhone(maxAreaPercentage);
                         }
 
                         tracker.trackResults(mappedRecognitions, luminanceCopy, currTimestamp);
@@ -369,6 +391,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                         requestRender();
                         computingDetection = false;
+                        results.clear();
                     }
                 });
     }
@@ -407,10 +430,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             //deprecated in API 26
             vibrator.vibrate(pattern[0]);
         }
-
-//        if(!mp.isPlaying()){
-//            mp.start();
-//        }
     }
 
 
@@ -429,26 +448,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         detector.enableStatLogging(debug);
     }
 
-    public int pickSound(float percent, String objType) {
-        Random rand = new Random();
-        int resId = 0;
-        int randomNum = rand.nextInt((3 - 1) + 1) + 1;
+    public String pickSound(float percent, String objType) {
+        String returnSound = "";
 
-        if(percent < 30) {
-            resId = getResources().getIdentifier("raw/generic" + randomNum, null, this.getPackageName());
-        }
-        else if(percent < 70) {
-            if(objType == "person"){
-                resId = getResources().getIdentifier("raw/people" + randomNum, null, this.getPackageName());
-            }
-            else{
-                resId = getResources().getIdentifier("raw/caution" + randomNum, null, this.getPackageName());
-            }
-        }
-        else if(percent >= 70) {
-            resId = getResources().getIdentifier("raw/danger" + randomNum, null, this.getPackageName());
-        }
-
-        return resId;
+        return null;
     }
 }
