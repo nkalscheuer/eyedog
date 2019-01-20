@@ -334,7 +334,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                     vibrator.vibrate(500);
                                 }
 
-
                                 cropToFrameTransform.mapRect(location);
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
