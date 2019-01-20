@@ -17,6 +17,7 @@
 package org.tensorflow.demo;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -28,6 +29,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -36,6 +38,7 @@ import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -113,6 +116,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private boolean computingDetection = false;
 
     private long timestamp = 0;
+    private MediaPlayer mp;
 
     private Matrix frameToCropTransform;
     private Matrix cropToFrameTransform;
@@ -132,6 +136,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
         tracker = new MultiBoxTracker(this);
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
 
         int cropSize = TF_OD_API_INPUT_SIZE;
         if (MODE == DetectorMode.YOLO) {
@@ -325,13 +330,16 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 float h = location.height();
                                 float w = location.width();
                                 float a = h * w;
-                                Camera.Parameters parameters = camera.getParameters();
-                                Camera.Size size = parameters.getPictureSize();
-                                int cameraHeight = size.height;
-                                int cameraWidth = size.width;
+
+                                mp = MediaPlayer.create(DetectorActivity.this, R.raw.getouttheway);
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && a >= 30000) {
                                     vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+
+                                    if(!mp.isPlaying()){
+                                        mp.start();
+                                    }
+
                                 } else if (a >= 30000) {
                                     //deprecated in API 26
                                     vibrator.vibrate(500);
@@ -365,5 +373,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     @Override
     public void onSetDebug(final boolean debug) {
         detector.enableStatLogging(debug);
+    }
+
+    public String pickSound(float percent, String objType) {
+        String returnSound = "";
+
+        return null;
     }
 }
