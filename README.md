@@ -1,6 +1,8 @@
+<img src="sample_images/teamPhoto.jpg" width="40%">
+
 # EyeDog
 
-Virtual assistant for the visually impaired.
+A computer vision assistant for the visually impaired.
 
 ## Description
 
