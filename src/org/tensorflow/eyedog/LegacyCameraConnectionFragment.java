@@ -1,4 +1,4 @@
-package org.tensorflow.demo;
+package org.tensorflow.eyedog;
 
 /*
  * Copyright 2017 The TensorFlow Authors. All Rights Reserved.
@@ -32,9 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import java.io.IOException;
 import java.util.List;
-import org.tensorflow.demo.env.ImageUtils;
-import org.tensorflow.demo.env.Logger;
-import org.tensorflow.demo.R; // Explicit import needed for internal Google builds.
+import org.tensorflow.eyedog.env.ImageUtils;
+import org.tensorflow.eyedog.env.Logger;
 
 public class LegacyCameraConnectionFragment extends Fragment {
   private Camera camera;

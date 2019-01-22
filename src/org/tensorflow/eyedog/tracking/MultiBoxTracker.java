@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-package org.tensorflow.demo.tracking;
+package org.tensorflow.eyedog.tracking;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -31,10 +31,10 @@ import android.widget.Toast;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import org.tensorflow.demo.Classifier.Recognition;
-import org.tensorflow.demo.env.BorderedText;
-import org.tensorflow.demo.env.ImageUtils;
-import org.tensorflow.demo.env.Logger;
+import org.tensorflow.eyedog.Classifier.Recognition;
+import org.tensorflow.eyedog.env.BorderedText;
+import org.tensorflow.eyedog.env.ImageUtils;
+import org.tensorflow.eyedog.env.Logger;
 
 /**
  * A tracker wrapping ObjectTracker that also handles non-max suppression and matching existing

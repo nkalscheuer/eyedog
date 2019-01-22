@@ -78,14 +78,14 @@ project.ext.TMP_DIR   = project.buildDir.toString() + '/downloads'
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '26.0.2'
 
     if (nativeBuildSystem == 'cmake') {
         defaultConfig {
+
             applicationId = 'org.tensorflow.demo'
-            minSdkVersion 21
-            targetSdkVersion 23
+            minSdkVersion 24
             targetSdkVersion 28
             ndk {
                 abiFilters "${cpuType}"
@@ -100,6 +100,10 @@ android {
             cmake {
                 path './jni/CMakeLists.txt'
             }
+        }
+        productFlavors {
+            versionCode 1
+            versionName "1.0"
         }
     }
 

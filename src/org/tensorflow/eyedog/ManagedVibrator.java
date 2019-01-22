@@ -1,4 +1,4 @@
-package org.tensorflow.demo;
+package org.tensorflow.eyedog;
 
 import android.content.Context;
 import android.media.AudioAttributes;

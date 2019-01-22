@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.tensorflow.demo;
+package org.tensorflow.eyedog;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -31,8 +30,6 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.os.Build;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
@@ -43,12 +40,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
-import org.tensorflow.demo.OverlayView.DrawCallback;
-import org.tensorflow.demo.env.BorderedText;
-import org.tensorflow.demo.env.ImageUtils;
-import org.tensorflow.demo.env.Logger;
-import org.tensorflow.demo.tracking.MultiBoxTracker;
-import org.tensorflow.demo.R; // Explicit import needed for internal Google builds.
+import org.tensorflow.eyedog.OverlayView.DrawCallback;
+import org.tensorflow.eyedog.env.BorderedText;
+import org.tensorflow.eyedog.env.ImageUtils;
+import org.tensorflow.eyedog.env.Logger;
+import org.tensorflow.eyedog.tracking.MultiBoxTracker;
 
 /**
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
